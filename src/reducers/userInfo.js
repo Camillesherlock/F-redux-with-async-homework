@@ -1,11 +1,32 @@
-const userInfo = (state = { logged: false }, action) => {
-  if (action.type === 'SET_USER_INFO') {
-    return { ...state, ...action.payload };
+const userInfo = (
+  state = {
+      isFetching:false,
+      logged: false,
+      data: null,
+      netError: false
+  },
+  action
+) => {
+  if(action.type === 'FETCH_INFO_REQUEST'){
+      return{
+          ...state, isFetching: true
+      }
   }
-  if (action.type === 'CLEAR_USER_INFO') {
-    return { logged: false };
+  if(action.type === 'FETCH_INFO_RECEIVE'){
+      return{
+          ...state, isFetching: false, data: action.payload, logged: true
+      }
   }
-  return state;
-};
+  if(action.type === 'CLEAR_USER_INFO'){
+      return {
+          ...state, logged: false
+      }
+  }if(action.type == 'SIGN_IN_FAIL'){
+    return{
+          ...state, netError: true
+    }
+  }
+  return state
+}
 
-export default userInfo;
+export default userInfo

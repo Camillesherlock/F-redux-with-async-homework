@@ -1,23 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setUserInfo, clearUserInfo } from '../actions';
+import { setUserInfo, clearUserInfo, fetchInfo} from '../actions';
 import './Header.scss';
 
 class Header extends Component {
-  switchLogin = () => {
-    if (this.props.userInfo.logged) {
-      this.props.handleSignOut();
-    } else {
-      fetch('https://my-json-server.typicode.com/kevindongzg/demo/login')
-        .then(res => res.json())
-        .then(data => {
-          this.props.handleSignIn({ logged: true, ...data });
-        })
-        .catch(err => {
-          console.log(err);
-        });
+
+  handleOnClick = () => {
+    if(this.props.userInfo.logged){
+      this.props.handleSignOut()
+    }else{
+      this.props.handleFetchInfo()
     }
-  };
+  }
 
   render() {
     return (
@@ -30,7 +24,7 @@ class Header extends Component {
             </>
           )}
 
-          <a className="sign" onClick={this.switchLogin}>
+          <a className="sign" onClick={this.handleOnClick}>
             {this.props.userInfo.logged ? 'Sign out' : 'Sign in'}
           </a>
         </div>
@@ -43,9 +37,15 @@ const mapStateToProps = ({ userInfo }) => ({
   userInfo
 });
 
-const mapDispatchToProps = {
+const mapDispatchToProps = dispatch => ({
   handleSignIn: info => setUserInfo(info),
-  handleSignOut: () => clearUserInfo()
-};
+  handleSignOut: () => clearUserInfo(),
+  handleFetchInfo () {
+    dispatch(fetchInfo())
+  },
+  handleSignOut () {
+    dispatch(clearUserInfo())
+  }
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
